@@ -1,0 +1,52 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'dev.github.sterio0o'
+version = '0.0.1-SNAPSHOT'
+description = 'common'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // AOP (Версия определится автоматически благодаря плагину)
+    api 'org.springframework:spring-aop'
+    api 'org.aspectj:aspectjweaver:1.9.22.1'
+    api 'org.aspectj:aspectjrt:1.9.22.1'
+
+    // JWT (Оставляем как у вас)
+    api 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Spring Security (Версии подставятся автоматически, не пишите :4.0.4)
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // Spring Core & Web (Вместо ручных spring-web лучше использовать стартер)
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    // Servlet API
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    // Logging & Jackson (Версии определятся автоматически)
+    implementation 'org.slf4j:slf4j-api'
+    api 'com.fasterxml.jackson.core:jackson-databind'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
