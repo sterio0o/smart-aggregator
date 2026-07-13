@@ -1,6 +1,6 @@
 package dev.github.sterio0o.collectorservice.controller;
 
-import dev.github.sterio0o.collectorservice.factory.AdapterType;
+import dev.github.sterio0o.common.util.AdapterType;
 import dev.github.sterio0o.collectorservice.service.ContentAggregationService;
 import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;

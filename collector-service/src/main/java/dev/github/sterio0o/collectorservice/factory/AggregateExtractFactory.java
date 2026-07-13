@@ -11,7 +11,7 @@ public class AggregateExtractFactory {
 
     private final HabrRssAdapter habrRssAdapter;
 
-    public AggregateProvider createAdapter(AdapterType type) {
+    public AggregateProvider createAdapter(dev.github.sterio0o.common.util.AdapterType type) {
         switch (type) {
             case HABR_RSS -> {
                 return habrRssAdapter;
