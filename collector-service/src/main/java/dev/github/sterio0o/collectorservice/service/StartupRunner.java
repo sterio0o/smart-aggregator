@@ -1,38 +1,65 @@
 package dev.github.sterio0o.collectorservice.service;
 
+import dev.github.sterio0o.collectorservice.kafka.KafkaProducer;
 import dev.github.sterio0o.collectorservice.model.Source;
 import dev.github.sterio0o.collectorservice.model.User;
 import dev.github.sterio0o.collectorservice.repository.UserRepository;
+import dev.github.sterio0o.common.event.TransmissionCollectedDataEvent;
 import dev.github.sterio0o.common.util.AdapterType;
+import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StartupRunner implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ContentAggregationService contentAggregationService;
     private final CollectionSchedulerService collectionSchedulerService;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public void run(String... args) throws Exception {
         List<User> users = userRepository.findAll();
 
         for (User user : users) {
-            // Извлечь все подписки юзера
-            Set<Source> sources = userRepository.findSourceById(user.getId());
-
             Runnable task = () -> {
-                List<AdapterType> types = sources.stream().map(Source::getName).toList();
-                contentAggregationService.getContentFromAllSource(types);
+                try {
+                    // Извлечь все подписки юзера
+                    Set<Source> sources = userRepository.findSourceById(user.getId());
+
+                    if (sources == null) {
+                        log.info("Список подписок пуст, user: {}", user.getId());
+                        return;
+                    }
+
+                    List<AdapterType> types = sources.stream().map(Source::getName).toList();
+                    List<AggregateContent> contents = contentAggregationService.getContentFromAllSource(types);
+
+                    TransmissionCollectedDataEvent event = new TransmissionCollectedDataEvent(
+                            user.getId(),
+                            contents
+                    );
+
+                    if (contents != null)
+                        kafkaProducer.sendEvent(event);
+
+                    log.info("Runnable успешно выполнен и событие отправлено в Kafka, user: {}", user.getId());
+                } catch (Exception e) {
+                    log.info("Ошибка в Runnable user: {}", user.getId());
+                }
             };
 
-            collectionSchedulerService.scheduleTask(user.getId(), user.getReportFrequency().toString(), task);
+            collectionSchedulerService.scheduleTask(user.getId(), user.getReportFrequency(), task);
         }
     }
 }
