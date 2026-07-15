@@ -2,6 +2,7 @@ package dev.github.sterio0o.collectorservice.factory;
 
 import dev.github.sterio0o.collectorservice.interfaces.AggregateProvider;
 import dev.github.sterio0o.collectorservice.service.HabrRssAdapter;
+import dev.github.sterio0o.common.util.AdapterType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

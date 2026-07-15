@@ -1,6 +1,6 @@
 package dev.github.sterio0o.collectorservice.service;
 
-import dev.github.sterio0o.collectorservice.factory.AdapterType;
+import dev.github.sterio0o.common.util.AdapterType;
 import dev.github.sterio0o.collectorservice.factory.AggregateExtractFactory;
 import dev.github.sterio0o.collectorservice.interfaces.AggregateProvider;
 import dev.github.sterio0o.common.util.AggregateContent;
