@@ -1,4 +1,4 @@
-package dev.github.sterio0o.collectorservice.service;
+package dev.github.sterio0o.collectorservice.adapter;
 
 import dev.github.sterio0o.collectorservice.dto.habr.HabrItem;
 import dev.github.sterio0o.collectorservice.dto.habr.HabrRss;
