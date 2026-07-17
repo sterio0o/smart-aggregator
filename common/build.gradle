@@ -25,7 +25,12 @@ dependencies {
     api 'org.aspectj:aspectjrt:1.9.22.1'
 
     // JWT
-    api 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    //api 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    api 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    api 'org.springframework.boot:spring-boot-starter-security'
 
     // Spring Core & Web
     api 'org.springframework.boot:spring-boot-starter-web'
