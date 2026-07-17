@@ -3,6 +3,7 @@ rootProject.name = 'smart-aggregator'
 def backendModules = [
         'collector-service',
         'api-gateway',
+        'user-service',
         'common'
 ]
 
