@@ -1,4 +1,4 @@
-package dev.github.sterio0o.collectorservice.model;
+package dev.github.sterio0o.userservice.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
