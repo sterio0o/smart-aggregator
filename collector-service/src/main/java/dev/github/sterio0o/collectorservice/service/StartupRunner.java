@@ -4,20 +4,17 @@ import dev.github.sterio0o.collectorservice.kafka.KafkaProducer;
 import dev.github.sterio0o.collectorservice.model.Source;
 import dev.github.sterio0o.collectorservice.model.User;
 import dev.github.sterio0o.collectorservice.repository.UserRepository;
-import dev.github.sterio0o.common.event.TransmissionCollectedDataEvent;
 import dev.github.sterio0o.common.util.AdapterType;
 import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+// ПЕРЕНЕСТИ В Analyzer Service и по индивидуальному расписанию брать данные и работать с ними
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -44,14 +41,6 @@ public class StartupRunner implements CommandLineRunner {
 
                     List<AdapterType> types = sources.stream().map(Source::getName).toList();
                     List<AggregateContent> contents = contentAggregationService.getContentFromAllSource(types);
-
-                    TransmissionCollectedDataEvent event = new TransmissionCollectedDataEvent(
-                            user.getId(),
-                            contents
-                    );
-
-                    if (contents != null)
-                        kafkaProducer.sendEvent(event);
 
                     log.info("Runnable успешно выполнен и событие отправлено в Kafka, user: {}", user.getId());
                 } catch (Exception e) {

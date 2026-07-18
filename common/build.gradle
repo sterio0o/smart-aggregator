@@ -31,6 +31,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
     // Spring Core & Web
     api 'org.springframework.boot:spring-boot-starter-web'

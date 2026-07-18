@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
+// ПЕРЕНЕСТИ В Analyzer Service
 // Сервис, который будет по таймеру обходить провайдеров и собирать контент
 @Service
 @RequiredArgsConstructor
