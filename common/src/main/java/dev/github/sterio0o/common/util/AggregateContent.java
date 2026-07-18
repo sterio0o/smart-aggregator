@@ -1,17 +1,26 @@
 package dev.github.sterio0o.common.util;
 
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 // "Сырые" данные из Collector Service, сохраняются в коллекцию raw
-public record AggregateContent(
-        String id,
-        String title,
-        String description,
-        String content,
-        String author,
-        String sourceUrl,
-        String sourceName,
-        String publishDate,
-        List<String> categories
-) {
+@Document(collection = "raw")
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+public class AggregateContent {
+    @Id
+    private String id;
+    private String title;
+    private String description;
+    private String content;
+    private String author;
+    private String sourceUrl;
+    private String sourceName;
+    private String publishDate;
+    private List<String> categories;
 }

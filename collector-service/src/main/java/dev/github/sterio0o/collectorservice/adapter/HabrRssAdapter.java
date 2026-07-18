@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 // Адаптер для получения Habr RSS ленты
 @Component
@@ -40,16 +41,16 @@ public class HabrRssAdapter implements AggregateProvider {
     }
 
     private AggregateContent convertToAggregateContent(HabrItem item) {
-        return new AggregateContent(
-                item.guid(),
-                item.title(),
-                item.description(),
-                item.description(),
-                "Unknown",
-                item.link(),
-                "Habr",
-                item.pubData(),
-                item.categories()
-        );
+        return AggregateContent.builder()
+                .id(UUID.randomUUID().toString())
+                .title(item.title())
+                .description(item.description())
+                .content(item.description())
+                .author("Unknown")
+                .sourceUrl(item.link())
+                .sourceName("HABR")
+                .publishDate(item.pubData())
+                .categories(item.categories())
+                .build();
     }
 }

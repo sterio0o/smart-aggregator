@@ -1,6 +1,5 @@
 package dev.github.sterio0o.collectorservice.kafka;
 
-import dev.github.sterio0o.common.event.TransmissionCollectedDataEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
