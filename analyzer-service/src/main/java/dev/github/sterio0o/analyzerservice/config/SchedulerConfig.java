@@ -1,10 +1,9 @@
-package dev.github.sterio0o.collectorservice.config;
+package dev.github.sterio0o.analyzerservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-// ПЕРЕНЕСТИ В Analyzer Service
 @Configuration
 public class SchedulerConfig {
 
