@@ -1,40 +1,46 @@
 package dev.github.sterio0o.collectorservice.service;
 
-import dev.github.sterio0o.collectorservice.repository.UserRepository;
+import dev.github.sterio0o.common.util.AdapterType;
+import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.scheduling.support.PeriodicTrigger;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.BulkOperationException;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
+import java.util.List;
 
-// ПЕРЕНЕСТИ В Analyzer Service
-// Сервис, который будет по таймеру обходить провайдеров и собирать контент
+// По расписанию будет ходить по выбранным в types сервисам и извлекать оттуда контент
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CollectionSchedulerService {
-    private final ThreadPoolTaskScheduler taskScheduler;
+    private final ContentAggregationService contentAggregationService;
+    private final MongoTemplate mongoTemplate;
 
-    // Хранилище задач
-    private final Map<UUID, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    private final List<AdapterType> types = List.of(AdapterType.HABR_RSS);
 
-    // Планирование задачи пользователя
-    public void scheduleTask(UUID userId, Duration reportFrequency, Runnable task) {
-        cancelUserTask(userId);
-        if (reportFrequency != null) {
-            ScheduledFuture<?> future = taskScheduler.schedule(task, new PeriodicTrigger(reportFrequency));
-            scheduledTasks.put(userId, future);
+    // Каждый час собирает данные
+    @Scheduled(fixedDelay = 3_600_000)
+    public void scheduleTask() {
+        List<AggregateContent> contents = contentAggregationService.getContentFromAllSource(types);
+
+        if (contents == null) {
+            log.info("scheduleTask не получил никакого контента");
+            return;
+        }
+
+        try {
+            BulkOperations bulkOperation = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AggregateContent.class);
+            bulkOperation.insert(contents);
+            bulkOperation.execute();
+
+            log.info("Контент успешно сохранен");
+        } catch (BulkOperationException e) {
+            log.info("Новые статьи сохранены, дубликаты пропущены");
         }
     }
 
-    // Завершить задачу
-    public void cancelUserTask(UUID userId) {
-        ScheduledFuture<?> task = scheduledTasks.remove(userId);
-        if (task != null) task.cancel(false);
-    }
 }

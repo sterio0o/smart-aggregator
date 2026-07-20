@@ -1,6 +1,9 @@
 package dev.github.sterio0o.common.util;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,13 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.util.List;
 
-// "Сырые" данные из Collector Service, сохраняются в коллекцию raw
-@Document(collection = "raw")
+// Обработанные данные
+@Document(collection = "processed")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class AggregateContent {
+public class ProcessedContent {
     @Id
     private String id;
     private String title;
@@ -23,13 +26,11 @@ public class AggregateContent {
     private String author;
 
     @Indexed(unique = true)
-    private String sourceUrl; // защита от дубликатов - уникальная url ссылка
+    private String sourceUrl;   // защита от дубликатов - уникальная url ссылка
 
     private String sourceName;
     private String publishDate;
-
-    @Indexed(expireAfter = "24h")
-    private Instant createdAt;  // TTL-индекс, который автоматически удаляет данные
-
     private List<String> categories;
+
+    private Instant processedAt;
 }
