@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -23,7 +24,10 @@ public class ProcessedContent {
     private String description;
     private String content;
     private String author;
-    private String sourceUrl;
+
+    @Indexed(unique = true)
+    private String sourceUrl;   // защита от дубликатов - уникальная url ссылка
+
     private String sourceName;
     private String publishDate;
     private List<String> categories;
