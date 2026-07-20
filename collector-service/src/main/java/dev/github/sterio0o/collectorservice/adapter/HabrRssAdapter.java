@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +50,7 @@ public class HabrRssAdapter implements AggregateProvider {
                 .sourceUrl(item.link())
                 .sourceName("HABR")
                 .publishDate(item.pubData())
+                .createdAt(Instant.now())
                 .categories(item.categories())
                 .build();
     }

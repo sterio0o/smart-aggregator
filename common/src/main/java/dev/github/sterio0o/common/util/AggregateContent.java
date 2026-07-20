@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.util.List;
 
 // "Сырые" данные из Collector Service, сохраняются в коллекцию raw
@@ -26,5 +27,9 @@ public class AggregateContent {
 
     private String sourceName;
     private String publishDate;
+
+    @Indexed(expireAfter = "24h")
+    private Instant createdAt;  // TTL-индекс, который автоматически удаляет данные
+
     private List<String> categories;
 }
