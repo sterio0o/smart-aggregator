@@ -42,7 +42,6 @@ public class HabrRssAdapter implements AggregateProvider {
 
     private AggregateContent convertToAggregateContent(HabrItem item) {
         return AggregateContent.builder()
-                .id(UUID.randomUUID().toString())
                 .title(item.title())
                 .description(item.description())
                 .content(item.description())

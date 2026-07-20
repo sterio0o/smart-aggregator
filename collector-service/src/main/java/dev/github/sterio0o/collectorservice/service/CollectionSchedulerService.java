@@ -1,10 +1,12 @@
 package dev.github.sterio0o.collectorservice.service;
 
-import dev.github.sterio0o.collectorservice.repository.RawDocumentRepository;
 import dev.github.sterio0o.common.util.AdapterType;
 import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.BulkOperationException;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class CollectionSchedulerService {
     private final ContentAggregationService contentAggregationService;
-    private final RawDocumentRepository rawDocumentRepository;
+    private final MongoTemplate mongoTemplate;
 
     private final List<AdapterType> types = List.of(AdapterType.HABR_RSS);
 
@@ -30,8 +32,15 @@ public class CollectionSchedulerService {
             return;
         }
 
-        rawDocumentRepository.saveAll(contents);
-        log.info("Контент успешно сохранен");
+        try {
+            BulkOperations bulkOperation = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AggregateContent.class);
+            bulkOperation.insert(contents);
+            bulkOperation.execute();
+
+            log.info("Контент успешно сохранен");
+        } catch (BulkOperationException e) {
+            log.info("Новые статьи сохранены, дубликаты пропущены");
+        }
     }
 
 }
