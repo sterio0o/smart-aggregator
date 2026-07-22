@@ -13,10 +13,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService {
+public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User register(AuthRequestDto requestDto) {
         if (userRepository.existsByEmail(requestDto.email())) {
             throw new RuntimeException("Email already exists");

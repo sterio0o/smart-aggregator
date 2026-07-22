@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Источники данных</title>
+    <style>
+        .active-page { font-weight: bold; font-size: 1.2em; color: black; }
+        .page-link { margin: 0 5px; text-decoration: none; color: blue; }
+    </style>
+</head>
+<body>
+<h2>Доступные источники</h2>
+
+<table border="1" cellpadding="5">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название адаптера</th>
+        <th>URL источника</th>
+        <th>Статус подписки</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="source : ${sourcesPage.content}">
+        <td th:text="${source.id}">1</td>
+        <td th:text="${source.name}">ADAPTER_NAME</td>
+        <td>
+            <a th:href="${source.sourceUrl}" th:text="${source.sourceUrl}" target="_blank">http://example.com</a>
+        </td>
+        <td>
+            <span th:if="${source.isSubscribe}" style="color: green; font-weight: bold;">Подписан</span>
+            <span th:unless="${source.isSubscribe}" style="color: gray;">Нет подписки</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${sourcesPage.totalPages > 1}" style="margin-top: 15px;">
+    <span>Страницы: </span>
+    <span th:each="i : ${#numbers.sequence(0, sourcesPage.totalPages - 1)}">
+            <a th:href="@{/web/profiles/sources(page=${i}, size=${sourcesPage.size})}"
+               th:text="${i + 1}"
+               th:class="${sourcesPage.number == i} ? 'page-link active-page' : 'page-link'">
+            </a>
+        </span>
+</div>
+</body>
+</html>
