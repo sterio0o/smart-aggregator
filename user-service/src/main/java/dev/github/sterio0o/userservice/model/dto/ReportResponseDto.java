@@ -1,29 +1,32 @@
-package dev.github.sterio0o.common.util;
+package dev.github.sterio0o.userservice.model.dto;
 
-import lombok.AllArgsConstructor;
+import dev.github.sterio0o.common.util.Report;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
-@Document(collection = "report")
+@Data
+@Builder
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-public class Report {
-    @Id
+public class ReportResponseDto {
     private String id;
-    private String userId;
-
     private String aiSummary; // Отчет нейросети
     private Instant createdAt;
-
     private List<String> sourceContentIds; // Ссылка на документы из processed, по которым был сделан отчет
     private List<String> keywords; // Ключевые слова интересующие пользователя и по которым делался отчет
+
+    public static ReportResponseDto convertToDto(Report entity) {
+        return new ReportResponseDto(
+                entity.getId(),
+                entity.getAiSummary(),
+                entity.getCreatedAt(),
+                entity.getSourceContentIds(),
+                entity.getKeywords()
+        );
+    }
 }

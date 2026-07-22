@@ -1,8 +1,12 @@
 package dev.github.sterio0o.userservice.service;
 
+import dev.github.sterio0o.common.util.Report;
+import dev.github.sterio0o.userservice.exception.ReportNotFoundException;
 import dev.github.sterio0o.userservice.exception.SourceNotFoundException;
+import dev.github.sterio0o.userservice.model.dto.ReportResponseDto;
 import dev.github.sterio0o.userservice.model.dto.SourceResponseDto;
 import dev.github.sterio0o.userservice.model.entity.Source;
+import dev.github.sterio0o.userservice.repository.ReportDocumentRepository;
 import dev.github.sterio0o.userservice.repository.SourceRepository;
 import dev.github.sterio0o.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import java.util.UUID;
 public class ProfileService {
     private final UserRepository userRepository;
     private final SourceRepository sourceRepository;
+    private final ReportDocumentRepository reportDocumentRepository;
 
     public SourceResponseDto getById(UUID userId, Long id) {
         Source source = sourceRepository.findById(id)
@@ -35,10 +40,6 @@ public class ProfileService {
     // Получить все источники с информацией на какие подписан, а на какие нет
     public Page<SourceResponseDto> getAllSourceForUser(UUID userId, Pageable pageable) {
         Page<Source> sources = sourceRepository.findAll(pageable);
-
-        if (sources.isEmpty())
-            throw new SourceNotFoundException("Ни один источник не найден");
-
         return sources.map(source -> {
             boolean isSubscribe = userRepository.existsByIdAndSources_Id(userId, source.getId());
             return SourceResponseDto.convertToDto(source, isSubscribe);
@@ -48,10 +49,12 @@ public class ProfileService {
     // Получить все источники на которые подписан пользователь
     public Page<SourceResponseDto> getAllSubscribe(UUID userId, Pageable pageable) {
         Page<Source> sourcePage = userRepository.findSourcesById(userId, pageable);
-
-        if (sourcePage.isEmpty())
-            throw new SourceNotFoundException("Ни один источник не найден");
-
         return sourcePage.map(source -> SourceResponseDto.convertToDto(source, true));
+    }
+
+    // Получить все отчеты (report) с пагинацией
+    public Page<ReportResponseDto> getMyReports(String userId, Pageable pageable) {
+        Page<Report> reportPage = reportDocumentRepository.findAllByUserId(userId, pageable);
+        return reportPage.map(ReportResponseDto::convertToDto);
     }
 }

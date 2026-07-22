@@ -8,6 +8,13 @@ spring:
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver
+  mongodb:
+    host: localhost
+    port: 27017
+    database: documents
+    username: admin
+    password: root
+    authentication-database: admin
 
   kafka:
     bootstrap-servers: localhost:9092
