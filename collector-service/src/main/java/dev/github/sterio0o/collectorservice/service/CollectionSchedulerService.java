@@ -22,12 +22,12 @@ public class CollectionSchedulerService {
 
     private final List<AdapterType> types = List.of(AdapterType.HABR_RSS);
 
-    // Каждый час собирает данные
+    // Каждый час собирает данные 3_600_000
     @Scheduled(fixedDelay = 3_600_000)
     public void scheduleTask() {
         List<AggregateContent> contents = contentAggregationService.getContentFromAllSource(types);
 
-        if (contents == null) {
+        if (contents == null || contents.isEmpty()) {
             log.info("scheduleTask не получил никакого контента");
             return;
         }

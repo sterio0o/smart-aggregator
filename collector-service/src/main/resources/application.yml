@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: collector-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5431/userdb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  mongodb:
+    host: localhost
+    port: 27017
+    database: documents
+    username: admin
+    password: root
+    authentication-database: admin
+    auto-index-creation: true
+
+server:
+  port: 8083
