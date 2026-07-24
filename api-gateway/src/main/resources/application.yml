@@ -6,7 +6,15 @@ spring:
         - id: collector-service
           uri: http://localhost:8081
           predicates:
-            - Path=/api/v1/contents/**        # ???? ?????? ?????????? ?
+            - Path=/api/v1/contents/**
+          filters:
+            - StripPrefix=0
+
+        - id: user-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/web/auth/**
+            - Path=/web/profiles/**
           filters:
             - StripPrefix=0
 

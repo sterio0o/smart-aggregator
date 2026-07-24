@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои источники</title>
+    <style>
+        .active-page { font-weight: bold; font-size: 1.2em; color: black; }
+        .page-link { margin: 0 5px; text-decoration: none; color: blue; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .btn:hover { background: #0056b3; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-profile { background: #17a2b8; }
+        .btn-profile:hover { background: #138496; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th, .table td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+        .table th { background: #f2f2f2; }
+        .subscribed { color: green; font-weight: bold; }
+        .pagination { margin-top: 20px; }
+        .empty { text-align: center; padding: 40px; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Мои подписки на источники</h2>
+        <div>
+            <a th:href="@{/web/profiles/my-profile}" class="btn btn-profile">Мой профиль</a>
+            <a th:href="@{/web/profiles/my-reports}" class="btn btn-secondary">Мои отчеты</a>
+            <a th:href="@{/web/profiles/sources}" class="btn">Все источники</a>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название адаптера</th>
+            <th>URL источника</th>
+            <th>Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="source : ${sourcesPage.content}">
+            <td th:text="${source.id}">1</td>
+            <td th:text="${source.name}">ADAPTER_NAME</td>
+            <td>
+                <a th:href="${source.sourceUrl}" th:text="${source.sourceUrl}" target="_blank">http://example.com</a>
+            </td>
+            <td>
+                <span class="subscribed">Подписан</span>
+            </td>
+        </tr>
+        <tr th:if="${sourcesPage.empty}">
+            <td colspan="4" class="empty">У вас нет активных подписок</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    <div th:if="${sourcesPage.totalPages > 1}" class="pagination">
+        <span>Страницы: </span>
+        <span th:each="i : ${#numbers.sequence(0, sourcesPage.totalPages - 1)}">
+            <a th:href="@{/web/profiles/my-sources(page=${i}, size=${sourcesPage.size})}"
+               th:text="${i + 1}"
+               th:class="${sourcesPage.number == i} ? 'page-link active-page' : 'page-link'">
+            </a>
+        </span>
+    </div>
+</div>
+</body>
+</html>

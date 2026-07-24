@@ -29,7 +29,7 @@ public class User {
     @Column(name = "keywords")
     private List<String> keywords;
 
-    @Column(name = "delivery_method", nullable = false)
+    @Column(name = "delivery_method")
     private String deliveryMethod;
 
     @Column(name = "report_frequency")

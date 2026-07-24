@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в систему</title>
+    <style>
+        .error { color: red; margin-bottom: 15px; }
+        .success { color: green; margin-bottom: 15px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: inline-block; width: 140px; }
+    </style>
+</head>
+<body>
+
+<h2>Вход в систему</h2>
+
+<div class="error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+<div class="success" th:if="${param.success}" th:text="'Регистрация прошла успешно! Войдите в аккаунт.'"></div>
+
+<form th:action="@{/web/auth/login}" method="POST">
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required />
+    </div>
+
+    <button type="submit">Войти</button>
+</form>
+
+<p>Еще не зарегистрированы? <a th:href="@{/web/auth/register}">Регистрация</a></p>
+
+</body>
+</html>

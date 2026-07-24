@@ -2,7 +2,7 @@ services:
   # =========================== KAFKA ===========================
   kafka:
     image: apache/kafka:3.7.0
-    container_name: kafka-broker
+    container_name: kafka-smart-aggregator
     hostname: kafka
     user: "root"
     ports:
