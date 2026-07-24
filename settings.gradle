@@ -5,6 +5,7 @@ def backendModules = [
         'api-gateway',
         'user-service',
         'analyzer-service',
+        'delivery-service',
         'common'
 ]
 

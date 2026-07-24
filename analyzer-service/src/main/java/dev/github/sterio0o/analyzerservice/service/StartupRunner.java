@@ -50,6 +50,9 @@ public class StartupRunner implements CommandLineRunner {
 
                     SuccessfulDataAnalysisEvent event = new SuccessfulDataAnalysisEvent(
                             user.getId(),
+                            user.getEmail(),
+                            user.getDeliveryMethod(),
+                            user.getKeywords(),
                             report
                     );
 
