@@ -12,6 +12,8 @@
         .btn:hover { background: #0056b3; }
         .btn-secondary { background: #6c757d; }
         .btn-secondary:hover { background: #5a6268; }
+        .btn-profile { background: #17a2b8; }
+        .btn-profile:hover { background: #138496; }
         .table { width: 100%; border-collapse: collapse; }
         .table th, .table td { padding: 10px; text-align: left; border: 1px solid #ddd; }
         .table th { background: #f2f2f2; }
@@ -26,6 +28,7 @@
     <div class="header">
         <h2>Доступные источники</h2>
         <div>
+            <a th:href="@{/web/profiles/my-profile}" class="btn btn-profile">Мой профиль</a>
             <a th:href="@{/web/profiles/my-sources}" class="btn btn-secondary">Мои подписки</a>
             <a th:href="@{/web/profiles/my-reports}" class="btn btn-secondary">Мои отчеты</a>
         </div>

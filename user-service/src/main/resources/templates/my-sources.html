@@ -10,6 +10,10 @@
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn { padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
         .btn:hover { background: #0056b3; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-profile { background: #17a2b8; }
+        .btn-profile:hover { background: #138496; }
         .table { width: 100%; border-collapse: collapse; }
         .table th, .table td { padding: 10px; text-align: left; border: 1px solid #ddd; }
         .table th { background: #f2f2f2; }
@@ -22,7 +26,11 @@
 <div class="container">
     <div class="header">
         <h2>Мои подписки на источники</h2>
-        <a th:href="@{/web/profiles/sources}" class="btn">Все источники</a>
+        <div>
+            <a th:href="@{/web/profiles/my-profile}" class="btn btn-profile">Мой профиль</a>
+            <a th:href="@{/web/profiles/my-reports}" class="btn btn-secondary">Мои отчеты</a>
+            <a th:href="@{/web/profiles/sources}" class="btn">Все источники</a>
+        </div>
     </div>
 
     <table class="table">

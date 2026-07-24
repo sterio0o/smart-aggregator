@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h2 {
+            margin: 0;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+        .keyword-tag {
+            background: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+        .keyword-tag .remove {
+            cursor: pointer;
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .keyword-tag .remove:hover {
+            color: #c82333;
+        }
+        .keyword-input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .keyword-input-group input {
+            flex: 1;
+        }
+        .keyword-input-group button {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .keyword-input-group button:hover {
+            background: #218838;
+        }
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Мой профиль</h2>
+        <div class="nav-links">
+            <a th:href="@{/web/profiles/sources}" class="btn btn-secondary">Источники</a>
+            <a th:href="@{/web/profiles/my-sources}" class="btn btn-secondary">Мои подписки</a>
+            <a th:href="@{/web/profiles/my-reports}" class="btn btn-secondary">Отчеты</a>
+        </div>
+    </div>
+
+    <!-- Сообщение об успехе -->
+    <div th:if="${success}" class="alert alert-success">
+        Профиль успешно обновлен!
+    </div>
+
+    <form th:action="@{/web/profiles/my-profile}" method="post">
+        <!-- Email (только для чтения) -->
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" th:value="${profile.email}" readonly style="background: #e9ecef; cursor: not-allowed;">
+            <div class="help-text">Email нельзя изменить</div>
+        </div>
+
+        <!-- Ключевые слова -->
+        <div class="form-group">
+            <label>Ключевые слова</label>
+            <div class="keywords-container" id="keywordsContainer">
+                <span th:each="keyword : ${profile.keywords}" class="keyword-tag" th:data-keyword="${keyword}">
+                    <span th:text="${keyword}"></span>
+                    <span class="remove" onclick="removeKeyword(this)">×</span>
+                </span>
+            </div>
+            <div class="keyword-input-group">
+                <input type="text" id="keywordInput" placeholder="Введите ключевое слово..."
+                       onkeypress="if(event.key === 'Enter'){event.preventDefault();addKeyword();}">
+                <button type="button" onclick="addKeyword()">Добавить</button>
+            </div>
+            <div class="help-text">Нажмите Enter или кнопку "Добавить"</div>
+        </div>
+
+        <!-- Способ доставки -->
+        <div class="form-group">
+            <label for="deliveryMethod">Способ доставки отчетов</label>
+            <select id="deliveryMethod" name="deliveryMethod">
+                <option value="">Выберите способ</option>
+                <option value="EMAIL" th:selected="${profile.deliveryMethod == 'EMAIL'}">Email</option>
+                <option value="TELEGRAM" th:selected="${profile.deliveryMethod == 'TELEGRAM'}">Telegram</option>
+                <option value="WEB" th:selected="${profile.deliveryMethod == 'WEB'}">Веб-интерфейс</option>
+                <option value="BOTH" th:selected="${profile.deliveryMethod == 'BOTH'}">Email + Telegram</option>
+            </select>
+        </div>
+
+        <!-- Частота отчетов -->
+        <div class="form-group">
+            <label for="reportFrequency">Частота отправки отчетов</label>
+            <select id="reportFrequency" name="reportFrequency">
+                <option value="">Выберите частоту</option>
+                <option value="PT1H" th:selected="${profile.reportFrequency?.toString() == 'PT1H'}">Каждый час</option>
+                <option value="PT3H" th:selected="${profile.reportFrequency?.toString() == 'PT3H'}">Каждые 3 часа</option>
+                <option value="PT6H" th:selected="${profile.reportFrequency?.toString() == 'PT6H'}">Каждые 6 часов</option>
+                <option value="PT12H" th:selected="${profile.reportFrequency?.toString() == 'PT12H'}">Каждые 12 часов</option>
+                <option value="PT24H" th:selected="${profile.reportFrequency?.toString() == 'PT24H'}">Раз в день</option>
+                <option value="P2D" th:selected="${profile.reportFrequency?.toString() == 'P2D'}">Раз в 2 дня</option>
+                <option value="P7D" th:selected="${profile.reportFrequency?.toString() == 'P7D'}">Раз в неделю</option>
+            </select>
+            <div class="help-text">ISO-8601 формат: PT1H = 1 час, P1D = 1 день</div>
+        </div>
+
+        <!-- Скрытое поле для ключевых слов -->
+        <input type="hidden" id="keywordsHidden" name="keywords" th:value="${#strings.listJoin(profile.keywords, ',')}">
+
+        <!-- Кнопки -->
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button type="submit" class="btn btn-success">Сохранить изменения</button>
+            <button type="reset" class="btn btn-secondary">Сбросить</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Добавление ключевого слова
+    function addKeyword() {
+        const input = document.getElementById('keywordInput');
+        const keyword = input.value.trim();
+
+        if (keyword === '') {
+            alert('Введите ключевое слово');
+            return;
+        }
+
+        const container = document.getElementById('keywordsContainer');
+        const existingKeywords = container.querySelectorAll('.keyword-tag span:first-child');
+        for (let span of existingKeywords) {
+            if (span.textContent.toLowerCase() === keyword.toLowerCase()) {
+                alert('Это ключевое слово уже добавлено');
+                return;
+            }
+        }
+
+        const tag = document.createElement('span');
+        tag.className = 'keyword-tag';
+        tag.setAttribute('data-keyword', keyword);
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = keyword;
+        tag.appendChild(textSpan);
+
+        const removeSpan = document.createElement('span');
+        removeSpan.className = 'remove';
+        removeSpan.textContent = '×';
+        removeSpan.onclick = function() { removeKeyword(this); };
+        tag.appendChild(removeSpan);
+
+        container.appendChild(tag);
+
+        input.value = '';
+        input.focus();
+
+        updateKeywordsHidden();
+    }
+
+    function removeKeyword(element) {
+        const tag = element.parentElement;
+        const keyword = tag.getAttribute('data-keyword');
+        if (confirm(`Удалить ключевое слово "${keyword}"?`)) {
+            tag.remove();
+            updateKeywordsHidden();
+        }
+    }
+
+    function updateKeywordsHidden() {
+        const container = document.getElementById('keywordsContainer');
+        const tags = container.querySelectorAll('.keyword-tag');
+        const keywords = [];
+        tags.forEach(tag => {
+            const span = tag.querySelector('span:first-child');
+            if (span) {
+                keywords.push(span.textContent);
+            }
+        });
+        document.getElementById('keywordsHidden').value = keywords.join(',');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('keywordInput');
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addKeyword();
+            }
+        });
+    });
+</script>
+</body>
+</html>
