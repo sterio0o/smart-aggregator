@@ -8,6 +8,7 @@ import dev.github.sterio0o.collectorservice.interfaces.HabrRssServiceClient;
 import dev.github.sterio0o.common.util.AggregateContent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -42,14 +43,16 @@ public class HabrRssAdapter implements AggregateProvider {
     }
 
     private AggregateContent convertToAggregateContent(HabrItem item) {
+        String clearContent = item.description() != null ? Jsoup.parse(item.description()).text() : "";
+
         return AggregateContent.builder()
                 .title(item.title())
-                .description(item.description())
-                .content(item.description())
+                .description(clearContent)
+                .content(clearContent)
                 .author("Unknown")
                 .sourceUrl(item.link())
                 .sourceName("HABR")
-                .publishDate(item.pubData())
+                .publishDate(item.pubDate())
                 .createdAt(Instant.now())
                 .categories(item.categories())
                 .build();
