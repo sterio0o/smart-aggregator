@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -26,20 +27,30 @@ public class HabrRssAdapter implements AggregateProvider {
 
     @Override
     public List<AggregateContent> fetchContent() {
-        try {
-            HabrRss rss = habrRssServiceClient.getHabrRssFeeds();
+        // Список RSS лент для обхода
+        List<String> hubNames = List.of("devops", "programming", "infosecurity", "artificial_intelligence", "java");
+        List<AggregateContent> result = new ArrayList<>();
+        List<AggregateContent> currentList;
 
-            if (rss == null || rss.channel() == null || rss.channel().items() == null) {
-                throw new HabrRssException("Habr RSS пуст!");
+        for (String hub : hubNames) {
+            try {
+                HabrRss rss = habrRssServiceClient.getHabrRssFeeds(hub);
+
+                if (rss == null || rss.channel() == null || rss.channel().items() == null) {
+                    throw new HabrRssException("Habr RSS пуст!");
+                }
+
+                currentList = rss.channel().items().stream()
+                        .map(this::convertToAggregateContent)
+                        .toList();
+
+                result.addAll(currentList);
+            } catch (Exception e) {
+                log.info("Не удалось распарсить Habr RSS ({}): {}", hub, e.getMessage());
             }
-
-            return rss.channel().items().stream()
-                    .map(this::convertToAggregateContent)
-                    .toList();
-        } catch (Exception e) {
-            log.info("Не удалось распарсить Habr RSS! " + e.getMessage());
-            return Collections.emptyList();
         }
+
+        return result;
     }
 
     private AggregateContent convertToAggregateContent(HabrItem item) {
