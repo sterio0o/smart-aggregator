@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@Import(CommonConfig.class)
+//@Import(CommonConfig.class)
 public class CollectorServiceApplication {
 
     public static void main(String[] args) {

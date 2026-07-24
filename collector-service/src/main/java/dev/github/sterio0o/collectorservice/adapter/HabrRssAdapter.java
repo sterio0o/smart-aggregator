@@ -36,7 +36,7 @@ public class HabrRssAdapter implements AggregateProvider {
                     .map(this::convertToAggregateContent)
                     .toList();
         } catch (Exception e) {
-            log.info("Не удалось распарсить Habr RSS!");
+            log.info("Не удалось распарсить Habr RSS! " + e.getMessage());
             return Collections.emptyList();
         }
     }
