@@ -13,10 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -91,5 +88,25 @@ public class WebProfileController {
         model.addAttribute("profile", updatedProfile);
         model.addAttribute("success", true);
         return "my-profile";
+    }
+
+    @PostMapping("/sources/{sourceId}/subscribe")
+    public String subscribeToSource(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long sourceId
+    ) {
+        String userId = userDetails.getUsername();
+        profileService.subscribeToSource(UUID.fromString(userId), sourceId);
+        return "redirect:/web/profiles/sources";
+    }
+
+    @PostMapping("/sources/{sourceId}/unsubscribe")
+    public String unsubscribeFromSource(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long sourceId
+    ) {
+        String userId = userDetails.getUsername();
+        profileService.unsubscribeFromSource(UUID.fromString(userId), sourceId);
+        return "redirect:/web/profiles/sources";
     }
 }
