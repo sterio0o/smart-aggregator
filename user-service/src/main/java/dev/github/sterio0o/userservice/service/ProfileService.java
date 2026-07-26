@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -45,8 +46,9 @@ public class ProfileService {
     // Получить все источники с информацией на какие подписан, а на какие нет
     public Page<SourceResponseDto> getAllSourceForUser(UUID userId, Pageable pageable) {
         Page<Source> sources = sourceRepository.findAll(pageable);
+        Set<Long> subscribedSourceIds = userRepository.findSubscribedSourceIds(userId);
         return sources.map(source -> {
-            boolean isSubscribe = userRepository.existsByIdAndSources_Id(userId, source.getId());
+            boolean isSubscribe = subscribedSourceIds.contains(source.getId());
             return SourceResponseDto.convertToDto(source, isSubscribe);
         });
     }
@@ -87,7 +89,7 @@ public class ProfileService {
             user.setReportFrequency(requestDto.getReportFrequency());
 
         User savedUser = userRepository.save(user);
-        return UserProfileResponseDto.convertToDto(user);
+        return UserProfileResponseDto.convertToDto(savedUser);
     }
 
     // Подписаться на источник
