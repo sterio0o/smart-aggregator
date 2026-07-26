@@ -21,3 +21,7 @@ CREATE TABLE user_subscription (
 );
 
 CREATE INDEX idx_email ON users(email);
+
+INSERT INTO sources (name, source_url) VALUES ('HABR_RSS', 'https://habr.com/ru/feed/');
+INSERT INTO sources (name, source_url) VALUES ('HABR_CAREER', 'https://career.habr.com/');
+INSERT INTO sources (name, source_url) VALUES ('HH.ru', 'https://hh.ru/');

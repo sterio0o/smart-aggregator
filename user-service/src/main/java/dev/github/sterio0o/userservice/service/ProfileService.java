@@ -89,4 +89,30 @@ public class ProfileService {
         User savedUser = userRepository.save(user);
         return UserProfileResponseDto.convertToDto(user);
     }
+
+    // Подписаться на источник
+    @Transactional
+    public void subscribeToSource(UUID userId, Long sourceId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User с ID=" + userId + " не найден"));
+
+        Source source = sourceRepository.findById(sourceId)
+                .orElseThrow(() -> new SourceNotFoundException("Source с ID=" + sourceId + " не найден"));
+
+        user.getSources().add(source);
+        userRepository.save(user);
+    }
+
+    // Отписаться от источника
+    @Transactional
+    public void unsubscribeFromSource(UUID userId, Long sourceId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User с ID=" + userId + " не найден"));
+
+        Source source = sourceRepository.findById(sourceId)
+                .orElseThrow(() -> new SourceNotFoundException("Source с ID=" + sourceId + " не найден"));
+
+        user.getSources().remove(source);
+        userRepository.save(user);
+    }
 }
