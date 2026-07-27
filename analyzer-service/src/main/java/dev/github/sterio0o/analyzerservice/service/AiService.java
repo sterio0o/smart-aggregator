@@ -58,7 +58,7 @@ public class AiService {
 
             report.setUserId(String.valueOf(userid));
             report.setCreatedAt(Instant.now());
-            report.setSourceContentIds(contents.stream().map(ProcessedContent::getId).toList());
+            report.setSourceContentIds(contents.stream().map(ProcessedContent::getSourceUrl).toList());
             report.setKeywords(keywords);
 
             reportDocumentRepository.save(report);
