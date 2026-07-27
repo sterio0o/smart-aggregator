@@ -14,7 +14,7 @@ public class AggregateExtractFactory {
 
     public AggregateProvider createAdapter(AdapterType type) {
         switch (type) {
-            case HABR_RSS -> {
+            case HABR -> {
                 return habrRssAdapter;
             }
             default -> throw new IllegalArgumentException("Неизвестный тип адаптера: " + type);

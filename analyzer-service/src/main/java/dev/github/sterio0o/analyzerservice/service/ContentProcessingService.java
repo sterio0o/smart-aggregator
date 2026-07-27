@@ -29,14 +29,21 @@ public class ContentProcessingService {
 
     // Преобразовать AggregateContent в ProcessedContent по ключевым словам
     public List<ProcessedContent> processedContent(UUID userId, List<AdapterType> types) {
+        log.info("Обработка контента началась");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Пользователь с ID=" + userId + " не найден"));
 
         List<String> typesString = types.stream().map(AdapterType::name).toList();
         List<String> keywords = user.getKeywords();
 
+        log.info("typesString: {}", typesString.size());
+        log.info("keywords: {}", keywords.size());
+
         List<AggregateContent> aggregateContents = rawDocumentRepository.findAllByCategoriesInAndSourceNameIn(keywords, typesString);
         List<String> rawUrls = aggregateContents.stream().map(AggregateContent::getSourceUrl).toList();
+
+        log.info("aggregateContents: {}", aggregateContents.size());
+        log.info("rawUrls: {}", rawUrls.size());
 
         // Ранее обработанный контент
         List<ProcessedContent> alreadyProcessed = processedDocumentRepository.findAllBySourceUrlIn(rawUrls);

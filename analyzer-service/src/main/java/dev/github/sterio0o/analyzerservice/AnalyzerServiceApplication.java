@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(CommonConfig.class)
+//@Import(CommonConfig.class)
 public class AnalyzerServiceApplication {
 
     public static void main(String[] args) {

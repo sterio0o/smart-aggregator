@@ -17,13 +17,35 @@ spring:
     authentication-database: admin
     auto-index-creation: true
 
+#  ai:
+#    openai:
+#      base-url: https://api.deepseek.com
+#      api-key: ${DEEPSEEK_API_KEY}
+#      chat:
+#        model: deepseek-chat
+
+# Блокирует запросы из РФ
+#  ai:
+#    openai:
+#      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+#      api-key: ${GEMINI_API_KEY}
+#      chat:
+#        model: gemini-3.5-flash-lite
+
+#  ai:
+#    openai:
+#      base-url: https://gigachat.devices.sberbank.ru/api/v1
+#      api-key: ${GIGACHAT_API_KEY}
+#      chat:
+#        model: GigaChat
+
   ai:
     openai:
-      base-url: https://api.deepseek.com
-      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://ai.api.cloud.yandex.net/v1
+      api-key: ${YANDEX_API_KEY}
+      #organization-id: ${YANDEX_CLOUD_FOLDER}
       chat:
-        options:
-          model: deepseek-chat
+        model: gpt://b1gauf7q6bptphj8ecsf/deepseek-v4-flash/latest
 
 server:
   port: 8081
