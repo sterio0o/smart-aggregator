@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -28,17 +29,18 @@ public class StartupRunner implements CommandLineRunner {
     private final KafkaProducer kafkaProducer;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllWithSources();
 
         for (User user : users) {
+            // Извлечь все подписки юзера
+            Set<Source> sources = user.getSources();
+
             Runnable task = () -> {
                 try {
-                    // Извлечь все подписки юзера
-                    Set<Source> sources = userRepository.findSourceById(user.getId());
-
                     if (sources == null) {
-                        log.info("Список подписок пуст, user: {}", user.getId());
+                        log.info("Список подписок пуст, user: {}", user.getEmail());
                         return;
                     }
 
@@ -57,9 +59,10 @@ public class StartupRunner implements CommandLineRunner {
                     );
 
                     kafkaProducer.sendEvent(event);
-                    log.info("Runnable успешно выполнен и событие отправлено в Kafka, user: {}", user.getId());
+                    log.info("Runnable успешно выполнен и событие отправлено в Kafka, user: {}", user.getEmail());
+                    log.info("Kafka event: {}", event.email());
                 } catch (Exception e) {
-                    log.info("Ошибка в Runnable user: {}", user.getId());
+                    log.info("Ошибка в Runnable user: {}, exception: {}", user.getEmail(), e.getMessage());
                 }
             };
 

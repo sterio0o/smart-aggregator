@@ -28,7 +28,7 @@ public class HabrRssAdapter implements AggregateProvider {
     @Override
     public List<AggregateContent> fetchContent() {
         // Список RSS лент для обхода
-        List<String> hubNames = List.of("devops", "programming", "infosecurity", "artificial_intelligence", "java");
+        List<String> hubNames = List.of("java"/*, "programming", "infosecurity", "artificial_intelligence", "devops"*/);
         List<AggregateContent> result = new ArrayList<>();
         List<AggregateContent> currentList;
 
@@ -65,7 +65,7 @@ public class HabrRssAdapter implements AggregateProvider {
                 .sourceName("HABR")
                 .publishDate(item.pubDate())
                 .createdAt(Instant.now())
-                .categories(item.categories())
+                .categories(item.categories().stream().map(String::toLowerCase).toList())
                 .build();
     }
 }

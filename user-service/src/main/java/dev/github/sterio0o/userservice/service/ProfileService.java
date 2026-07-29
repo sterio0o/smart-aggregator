@@ -80,7 +80,7 @@ public class ProfileService {
                 .orElseThrow(() -> new UserNotFoundException("User с ID=" + userId + " не найден"));
 
         if (!requestDto.getKeywords().isEmpty())
-            user.setKeywords(requestDto.getKeywords());
+            user.setKeywords(requestDto.getKeywords().stream().map(String::toLowerCase).toList());
 
         if (!requestDto.getDeliveryMethod().isEmpty())
             user.setDeliveryMethod(requestDto.getDeliveryMethod());

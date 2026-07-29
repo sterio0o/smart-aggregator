@@ -20,7 +20,7 @@ public class CollectionSchedulerService {
     private final ContentAggregationService contentAggregationService;
     private final MongoTemplate mongoTemplate;
 
-    private final List<AdapterType> types = List.of(AdapterType.HABR_RSS);
+    private final List<AdapterType> types = List.of(AdapterType.HABR);
 
     // Каждый час собирает данные 3_600_000
     @Scheduled(fixedDelay = 3_600_000)
